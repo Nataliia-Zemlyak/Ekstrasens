@@ -4,53 +4,118 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>They say you see the future</title>
+    <title>Гра Екстрасенс</title>
 </head>
 <body>
-    <form action="range.php" method="POST">
-        <?php 
-            $password = $_POST["password"];
-            $chooseStart = $_POST["chooseStart"];
-            $chooseEnd = $_POST["chooseEnd"];
-            $chooseRange = $chooseStart + 4;
-            $ansNum = $_POST["ansNum"];
-            
-            
-                if(isset($_POST["run"])){
-                    if($ansNum > $password){
-                        echo("<p>Number is small. $ansNum</p>");
-                        
-                    }else if ($ansNum < $password){
-                        echo("<p>Number is big. $ansNum</p>");
-                        
-                    }else if ($ansNum = $password){
+<form action="range.php" method="POST">
 
-                        echo("<p>You guessed it!</p>");
-                    }
+<?php
+    
+
+
+    $password = $_POST["password"];
+    $chooseStart = $_POST["chooseStart"];
+    $chooseEnd = $_POST["chooseEnd"];
+    $chooseRange = $chooseStart + 4;
+    $ansNum = $_POST["ansNum"];
+    $balOne = $_POST["balOne"];
+    $balTwo = $_POST["balTwo"];
+    $balTree = $_POST["balTree"];
+    
+    
+    
+
+    if($balTree < 20){
+        if(isset($_POST["run"])){
+            if($ansNum > $password){
+                echo("<p>Число менше </p>");
+                //$balTree += 1;
+            }else if ($ansNum < $password){
+                echo("<p>число більше </p>");
+                //$balTree += 1;
+            }else if ($ansNum = $password){
+
+                $balOneGen = 0;
+                $balTwoGen = 0;
+                $balTreeGen = 0;
+
+
+                if($balOneGen == 1){
+                    $balOneGen = 15;
+                }else{
+                    $balOneGen = 0;
                 }
+                if($balTwoGen == 1){
+                    $balTwoGen = 40;
+                }else{
+                    $balTwoGen = 0;
+                }
+                if($balTreeGen == 0){
+                    $balTreeGen = 15;
+                }else if($balTreeGen < 5){
+                    $balTreeGen = 15 - $balTreeGen;
+                }else{
+                    $balTreeGen = -10;
+                }
+
+                $balGeneral = $balOneGen + $balTwoGen + $balTreeGen;
+
+                if($balGeneral < 0){
+                    $balGeneral = 0;
+                }
+
+
+
+
+                echo("<p>Вітаю! Ви вгадали</p>");
+                echo("<p>Число: $ansNum</p>");
+                session_start();
+                $_SESSION["sPoint"] += $balGeneral;
+                //echo("<p>Your mark is $balGeneral</p>");
+                
+            }
+        }
+
+        if($ansNum != $password){
+            echo ("<p>Оберіть число</p>");
+            echo("<select name='ansNum'>");
+            if($_POST["password"] <= $chooseRange){
+                
+                for($i = $chooseStart; $i <= $chooseRange; $i++){
+                        
+                        echo("<option value=$i>$i</option>");
+                }
+            }else{
+                for($i = $chooseRange+1; $i <= $chooseEnd; $i++){
+                    echo("<option value=$i>$i</option>");
+                }
+            }
+            echo("</select>");
+        }
+    }else{
+        echo("<p>Ви не ивгадали число</p>");
+        //echo("<p>Attempts ended ($balTree)</p>");
         
-                if($ansNum != $password){
-                    echo("<select name='ansNum'>");
-                    if($_POST["password"] <= $chooseRange){
-                        for($i = $chooseStart; $i <= $chooseRange; $i++){
-                                echo("<option value=$i>$i</option>");
-                        }
-                    }else{
-                        for($i = $chooseRange; $i <= $chooseEnd; $i++){
-                            echo("<option value=$i>$i</option>");
-                        }
-                    }
-                    echo("</select>");
-                }
-            
-                    echo("<input type='submit' value='ok' name='run'>");
-            
-        ?>
-                <input type='hidden' name='password' value="<?php echo($password); ?>">
-                <input type='hidden' name='chooseStart' value="<?php echo($chooseStart); ?>">
-                <input type='hidden' name='chooseEnd' value="<?php echo($chooseEnd); ?>">
-                
-                
+        echo("<p>Ваше число </p>");
+        
+        //$balTree += 1;
+    }
+
+    if($balTree < 5){
+        if($ansNum != $password){
+            echo("<input type='submit' value='run' name='run'>");
+        }
+    }
+    
+?>
+        <input type='hidden' name='password' value="<?php echo($password); ?>">
+        <input type='hidden' name='balOne' value="<?php echo($balOne); ?>">
+        <input type='hidden' name='balTwo' value="<?php echo($balTwo); ?>">
+        <input type='hidden' name='balTree' value="<?php echo($balTree); ?>">
+        <input type='hidden' name='chooseStart' value="<?php echo($chooseStart); ?>">
+        <input type='hidden' name='chooseEnd' value="<?php echo($chooseEnd); ?>">
+        
+        <p><a href='index.php'>Нова гра</a></p>
     </form>
 
 </body>

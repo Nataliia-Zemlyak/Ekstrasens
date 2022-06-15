@@ -7,29 +7,57 @@
     <title>Guess the number of 5</title>
 </head>
 <body>
-    <form action="result.php" method="POST">
-        <?php
+<?php
             $password = $_POST["password"];
+            $chooseStart = $_POST["chooseStart"];
+            $chooseEnd = $_POST["chooseEnd"];
             $ansNum = $_POST["ansNum"];
+            $balOne = $_POST["balOne"];
+            $balTwo = $_POST["balTwo"];
+            $balTree = $_POST["balTree"];
+            
             if($password == $ansNum){
+                $balTwo = 2;
+
+                $balOneGen = 0;
+                $balTwoGen = 0;
+                $balTreeGen = 0;
+
+
+                if($balOne == 1){
+                    $balOneGen = 50;
+                }else{
+                    $balOneGen = 0;
+                }
+                if($balTwo == 2){
+                    $balTwoGen = 50;
+                }else{
+                    $balTwoGen = 0;
+                }
+
+                $balGeneral = $balOneGen + $balTwoGen;
                 echo("<p>You guessed it!</p>");
-                
+                echo("<p>Mark is: $password</p>");
+                //echo("<p>Your mark is $balGeneral</p>");
+                session_start();
+                $_SESSION["sPoint"] += $balGeneral;
+                //echo("<a href='indeh.php'>Play again</a>");
             }else{
                 echo("<p>You didn't guess the number</p>");
-                
+                echo("<p>Choose number</p>");
             }
         ?>
-    </form>
+
             <form action="range.php" method="POST"> 
                 <?php   
-                
+            
                 
                 $password = $_POST["password"];
                 $chooseStart = $_POST["chooseStart"];
                 $chooseEnd = $_POST["chooseEnd"];
                 $chooseRange = $chooseStart + 4;
                 $ansNum = $_POST["ansNum"];
-                if($password <= $chooseRange && $ansNum <= $chooseRange){
+                if($_POST["password"] <= $chooseRange && $_POST["ansNum"] <= $chooseRange){
                     $b2 = 1;
                 }else if($_POST["password"] >= $chooseRange && $_POST["ansNum"] >= $chooseRange){
                     $b2 = 1;
@@ -43,14 +71,14 @@
                         echo("<p>Number is big $ansNum</p>");
                     }else if ($ansNum = $password){
                         echo("<p>You guessed it!</p>");
-                        echo("<p>Mark is: $ansNum</p>");
+                        echo("<p>Number is: $ansNum</p>");
                         
                     }
                 }
 
 
                 if($ansNum != $password){
-                    echo("<select name='answerNumberOf5P'>");
+                    echo("<select name='ansNum'>");
                     if($_POST["password"] <= $chooseRange){
                         for($i = $chooseStart; $i <= $chooseRange; $i++){
                                 echo("<option value=$i>$i</option>");
@@ -64,17 +92,21 @@
                 }
     
                 if($ansNum != $password){
-                    echo("<input type='submit' value='ok' name='run'>");
+                    echo("<input type='submit' value='run' name='run'>");
                 }
                 
-            
-
-        ?>
+                
+            ?>
+            <p><a href='index.php'>Start new game</a></p>
             <input type='hidden' name='password' value="<?php echo($password); ?>">
+            <input type='hidden' name='balOne' value="<?php echo($balOne); ?>">
+            <input type='hidden' name='balTwo' value="<?php echo($balTwo); ?>">
+            <input type='hidden' name='balTree' value="<?php echo($balTree); ?>">
             <input type='hidden' name='chooseStart' value="<?php echo($chooseStart); ?>">
             <input type='hidden' name='chooseEnd' value="<?php echo($chooseEnd); ?>">
             <input type='hidden' name='ansNum' value="<?php echo($ansNum); ?>">
         </form>
+
 
 </body>
 </html>
