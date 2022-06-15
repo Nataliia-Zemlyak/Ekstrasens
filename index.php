@@ -7,42 +7,26 @@
     <title>Гра Екстрасенс</title>
 </head>
 <body>
-<form action="game.php" method="POST">
-    <?php
-        
-        session_start();
-                
-                //$sPoint = $_SESSION["sPoint"];
+<form action="number.php" method="POST">
+            <?php
+                session_start();
                 $password = rand(1, 100);
-                //if($sPoint == ""){
-                    //$_SESSION["sPoint"] = 0;
-                    //echo("<p>Mark: $sPoint</p>");
-                //}else{
-                    //echo("<p>Mark: $sPoint</p>");
-                //}
-                //$point = 10;
-                $balOne = 0;
-                $balTwo = 0;
-                $balTree = 0;
-        echo("<h1>Виберіть діапазон</h1>");
-            echo("<select name='choose'>");
-                $f = 1;
+                echo("<h1>Оберіть діапазон</h1>");
+                echo("<select name='answer'>");
+                $c = 1;
                 for($i = 1; $i <= 10; $i++){
-                    $j = $i * 10;
-                    $p = "$f-$j";
-                    echo("<option value=$p>$f-$j</option>");
-                    $f += 10;
+                    $t1 = $i * 10;
+                    $p = "$c-$t1";
+                    echo("<option value=$p>$c-$t1</option>");
+                    $c += 10;
                 }
-            echo("</select>");
-    ?>
+                echo("</select>");
 
-        <input type='hidden' name='password' value="<?php echo($password); ?>">
-        <input type='hidden' name='balOne' value="<?php echo($balOne); ?>">
-        <input type='hidden' name='balTwo' value="<?php echo($balTwo); ?>">
-        <input type='hidden' name='balTree' value="<?php echo($balTree); ?>">
-        <input type='hidden' name='point' value="<?php echo($point); ?>">
-        <input type="submit" name="go" value="go" />
-        
-    </form>
+            
+                echo("<input type='hidden' name='password' value='$password'>");
+                echo("<p><input type='submit' value='run'></p>");
+            ?>
+            
+        </form>
 </body>
 </html>

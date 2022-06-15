@@ -8,105 +8,59 @@
 </head>
 <body>
 <?php
+        session_start();
+        $password = $_POST["password"];
+        $number = $_POST["number"];
+        $rangeStart = $_POST["rangeStart"];
+        $rangeLast = $_POST["rangeLast"];
+        $choose = [];
+        if($password == $number){
+            echo("<p>Вітію! Ви відгадали число</p>");
+            echo("<a href='index.php'>Розпочати нову гру</a>");
+        }else{
+            echo("<p>Ви не відгадали число</p>");
+            echo("<h4>Оберіть число</h4>");
+            echo('<form action="range.php" method="POST">');
             $password = $_POST["password"];
-            $chooseStart = $_POST["chooseStart"];
-            $chooseEnd = $_POST["chooseEnd"];
-            $ansNum = $_POST["ansNum"];
-            $balOne = $_POST["balOne"];
-            $balTwo = $_POST["balTwo"];
-            $balTree = $_POST["balTree"];
-            
-            if($password == $ansNum){
-                $balTwo = 2;
+            $rangeStart = $_POST["rangeStart"];
+            $rangeLast = $_POST["rangeLast"];
+            $range = $rangeStart + 4;
+            $chooseAnswer = $_POST["chooseAnswer"];//
 
-                $balOneGen = 0;
-                $balTwoGen = 0;
-                $balTreeGen = 0;
-
-
-                if($balOne == 1){
-                    $balOneGen = 50;
-                }else{
-                    $balOneGen = 0;
+            if(isset($_POST["run"])){
+                if($chooseAnswer > $password){
+                    echo("<p>Число менше</p>");
+                }else if ($chooseAnswer < $password){
+                    echo("<p>Число більше</p>");
                 }
-                if($balTwo == 2){
-                    $balTwoGen = 50;
-                }else{
-                    $balTwoGen = 0;
-                }
-
-                $balGeneral = $balOneGen + $balTwoGen;
-                echo("<p>You guessed it!</p>");
-                echo("<p>Mark is: $password</p>");
-                //echo("<p>Your mark is $balGeneral</p>");
-                session_start();
-                $_SESSION["sPoint"] += $balGeneral;
-                //echo("<a href='indeh.php'>Play again</a>");
-            }else{
-                echo("<p>You didn't guess the number</p>");
-                echo("<p>Choose number</p>");
             }
-        ?>
 
-            <form action="range.php" method="POST"> 
-                <?php   
-            
-                
-                $password = $_POST["password"];
-                $chooseStart = $_POST["chooseStart"];
-                $chooseEnd = $_POST["chooseEnd"];
-                $chooseRange = $chooseStart + 4;
-                $ansNum = $_POST["ansNum"];
-                if($_POST["password"] <= $chooseRange && $_POST["ansNum"] <= $chooseRange){
-                    $b2 = 1;
-                }else if($_POST["password"] >= $chooseRange && $_POST["ansNum"] >= $chooseRange){
-                    $b2 = 1;
-                }
-                
 
-                if(isset($_POST["run"])){
-                    if($ansNum > $password){
-                        echo("<p>Number is small $ansNum</p>");
-                    }else if ($ansNum < $password){
-                        echo("<p>Number is big $ansNum</p>");
-                    }else if ($ansNum = $password){
-                        echo("<p>You guessed it!</p>");
-                        echo("<p>Number is: $ansNum</p>");
-                        
+            if($chooseAnswer != $password){
+                echo("<select name='chooseAnswer'>");//
+                if($_POST["password"] <= $range){
+                    for($i = $rangeStart; $i <= $range; $i++){
+                            echo("<option value=$i>$i</option>");
+                    }
+                }else{
+                    for($i = $range+1; $i <= $rangeLast; $i++){
+                            echo("<option value=$i>$i</option>");
                     }
                 }
+                echo("</select>");
+            }
 
-
-                if($ansNum != $password){
-                    echo("<select name='ansNum'>");
-                    if($_POST["password"] <= $chooseRange){
-                        for($i = $chooseStart; $i <= $chooseRange; $i++){
-                                echo("<option value=$i>$i</option>");
-                        }
-                    }else{
-                        for($i = $chooseRange+1; $i <= $chooseEnd; $i++){
-                                echo("<option value=$i>$i</option>");
-                        }
-                    }
-                    echo("</select>");
-                }
-    
-                if($ansNum != $password){
-                    echo("<input type='submit' value='run' name='run'>");
-                }
-                
-                
-            ?>
-            <p><a href='index.php'>Start new game</a></p>
-            <input type='hidden' name='password' value="<?php echo($password); ?>">
-            <input type='hidden' name='balOne' value="<?php echo($balOne); ?>">
-            <input type='hidden' name='balTwo' value="<?php echo($balTwo); ?>">
-            <input type='hidden' name='balTree' value="<?php echo($balTree); ?>">
-            <input type='hidden' name='chooseStart' value="<?php echo($chooseStart); ?>">
-            <input type='hidden' name='chooseEnd' value="<?php echo($chooseEnd); ?>">
-            <input type='hidden' name='ansNum' value="<?php echo($ansNum); ?>">
-        </form>
-
+            $chooseEncode = json_encode($choose);
+            echo("<input type='hidden' name='password' value='$password'>");
+            echo("<input type='hidden' name='rangeStart' value='$rangeStart'>");
+            echo("<input type='hidden' name='rangeLast' value='$rangeLast'>");
+            echo("<input type='hidden' name='choose' value='$chooseEncode'>");
+            if($chooseAnswer != $password){
+                echo("<p><input type='submit' value='run' name='run'></p>");
+            }
+            echo("</form>");
+        }
+    ?>
 
 </body>
 </html>

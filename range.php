@@ -10,113 +10,86 @@
 <form action="range.php" method="POST">
 
 <?php
-    
+        session_start();
+        echo('<form action="range.php" method="POST">');
+        $password = $_POST["password"];
+        $rangeStart = $_POST["rangeStart"];
+        $rangeLast = $_POST["rangeLast"];
+        $range = $rangeStart + 4;
+        $chooseAnswer = $_POST["chooseAnswer"];//
+        $choose = $_POST["choose"];
+        $chooseDecode = json_decode($choose);
+        array_push($chooseDecode, $_POST["chooseAnswer"]);//
 
-
-    $password = $_POST["password"];
-    $chooseStart = $_POST["chooseStart"];
-    $chooseEnd = $_POST["chooseEnd"];
-    $chooseRange = $chooseStart + 4;
-    $ansNum = $_POST["ansNum"];
-    $balOne = $_POST["balOne"];
-    $balTwo = $_POST["balTwo"];
-    $balTree = $_POST["balTree"];
-    
-    
-    
-
-    if($balTree < 20){
-        if(isset($_POST["run"])){
-            if($ansNum > $password){
-                echo("<p>Число менше </p>");
-                //$balTree += 1;
-            }else if ($ansNum < $password){
-                echo("<p>число більше </p>");
-                //$balTree += 1;
-            }else if ($ansNum = $password){
-
-                $balOneGen = 0;
-                $balTwoGen = 0;
-                $balTreeGen = 0;
-
-
-                if($balOneGen == 1){
-                    $balOneGen = 15;
-                }else{
-                    $balOneGen = 0;
-                }
-                if($balTwoGen == 1){
-                    $balTwoGen = 40;
-                }else{
-                    $balTwoGen = 0;
-                }
-                if($balTreeGen == 0){
-                    $balTreeGen = 15;
-                }else if($balTreeGen < 5){
-                    $balTreeGen = 15 - $balTreeGen;
-                }else{
-                    $balTreeGen = -10;
-                }
-
-                $balGeneral = $balOneGen + $balTwoGen + $balTreeGen;
-
-                if($balGeneral < 0){
-                    $balGeneral = 0;
-                }
-
-
-
-
-                echo("<p>Вітаю! Ви вгадали</p>");
-                echo("<p>Число: $ansNum</p>");
-                session_start();
-                $_SESSION["sPoint"] += $balGeneral;
-                //echo("<p>Your mark is $balGeneral</p>");
+        if(isset($_POST)){
+            if(isset($_POST["run"])){
+                if($chooseAnswer > $password){
+                    echo("<p>Число менше</p>");
+                }else if ($chooseAnswer < $password){
+                    echo("<p>Число більше</p>");
+                }else if ($chooseAnswer = $password){
+                    echo("<p>Вітаю! Ви відгадали число</p>");
+                    echo("<p>Число: $chooseAnswer</p>");
+                    echo("<p><a href='index.php'>Розпочати нову гру</a></p>");
+                } 
                 
             }
-        }
-
-        if($ansNum != $password){
-            echo ("<p>Оберіть число</p>");
-            echo("<select name='ansNum'>");
-            if($_POST["password"] <= $chooseRange){
-                
-                for($i = $chooseStart; $i <= $chooseRange; $i++){
-                        
-                        echo("<option value=$i>$i</option>");
-                }
-            }else{
-                for($i = $chooseRange+1; $i <= $chooseEnd; $i++){
-                    echo("<option value=$i>$i</option>");
-                }
-            }
-            echo("</select>");
-        }
-    }else{
-        echo("<p>Ви не ивгадали число</p>");
-        //echo("<p>Attempts ended ($balTree)</p>");
-        
-        echo("<p>Ваше число </p>");
-        
-        //$balTree += 1;
-    }
-
-    if($balTree < 5){
-        if($ansNum != $password){
-            echo("<input type='submit' value='run' name='run'>");
-        }
-    }
     
-?>
-        <input type='hidden' name='password' value="<?php echo($password); ?>">
-        <input type='hidden' name='balOne' value="<?php echo($balOne); ?>">
-        <input type='hidden' name='balTwo' value="<?php echo($balTwo); ?>">
-        <input type='hidden' name='balTree' value="<?php echo($balTree); ?>">
-        <input type='hidden' name='chooseStart' value="<?php echo($chooseStart); ?>">
-        <input type='hidden' name='chooseEnd' value="<?php echo($chooseEnd); ?>">
-        
-        <p><a href='index.php'>Нова гра</a></p>
-    </form>
+            if($chooseAnswer != $password){
+                echo("<select name='chooseAnswer'>");//
+
+                if($_POST["password"] <= $range){
+                    for($i = $rangeStart; $i <= $range; $i++){
+                        $e = 0;
+                        $j = 0;
+                        while($j <= count($chooseDecode)){
+                            if($i == $chooseDecode[$j]){
+                                $e = 1;
+                                $j = count($chooseDecode) + 1;
+                            }
+                            $j++;
+                        }
+                        if($e == 1){
+                            echo("<option value='$i' disabled>$i</option>");
+                        }else{
+                            echo("<option value='$i'>$i</option>");
+                        }
+                    }
+                }else{
+                    for($i = $range+1; $i <= $rangeLast; $i++){
+                        $e = 0;
+                        $j = 0;
+                        while($j <= count($chooseDecode)){
+                            if($i == $chooseDecode[$j]){
+                                $e = 1;
+                                $j = count($chooseDecode) + 1;
+                            }
+                            $j++;
+                        }
+                        if($e == 1){
+                            echo("<option value='$i' disabled>$i</option>");
+                        }else{
+                            echo("<option value='$i'>$i</option>");
+                        }
+                    }
+                }
+                echo("</select>");
+            }
+        }else{
+            echo("<p>Ви не вгадали число</p>");
+            echo("<p><a href='index.php'>Розпочати нову гру</a></p>");
+        }
+
+        $chooseEncode = json_encode($chooseDecode);
+
+ 
+        echo("<input type='hidden' name='password' value='$password'>");
+        echo("<input type='hidden' name='rangeStart' value='$rangeStart'>");
+        echo("<input type='hidden' name='rangeLast' value='$rangeLast'>");
+        echo("<input type='hidden' name='choose' value='$chooseEncode'>");
+        echo("<input type='submit' value='run' name='run'>");
+        echo("</form>");
+    ?>
 
 </body>
 </html>
